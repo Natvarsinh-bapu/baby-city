@@ -83,7 +83,7 @@
           layout: 2,
         })
 
-        router.push('/')
+        router.push('/admin')
       } else {
         toast.error({
           title: 'Error!',
