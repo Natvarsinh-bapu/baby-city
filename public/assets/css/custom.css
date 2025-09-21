@@ -1,0 +1,114 @@
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.category-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.category-card {
+  border: 2px solid #f1f1f1;
+  padding: 16px;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.category-card img {
+  height: 250px;
+  object-fit: cover;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  border-color: #ffc107;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hover-up {
+  cursor: pointer;
+}
+
+.social-icon img {
+  height: 32px;
+  width: 32px;
+  object-fit: cover;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.social-icon:hover img {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.hoverable-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hoverable-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.gradient-badge {
+  background: linear-gradient(45deg, #0d47a1, #1976d2);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.4em 0.75em;
+}
+
+/* hide sidebar toggle button on desktop view */
+.toggle-sidebar-btn {
+  display: none;
+}
+
+/* Mobile view (xs/sm) */
+@media (max-width: 576px) {
+  .category-card {
+    padding: 5px;
+  }
+
+  .category-card img {
+    height: 150px;
+    object-fit: cover;
+  }
+
+  .category-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    text-align: center;
+    margin-bottom: 0;
+  }
+
+  .toggle-sidebar-btn {
+    display: block;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .toggle-sidebar-btn {
+    display: block;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .toggle-sidebar-btn {
+    display: block;
+  }
+}
