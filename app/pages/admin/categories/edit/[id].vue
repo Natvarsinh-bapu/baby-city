@@ -3,16 +3,14 @@
     <!-- Page Title + Back Button -->
     <div class="pagetitle d-flex justify-content-between align-items-center">
       <h1>Edit Category</h1>
-      <NuxtLink to="/admin/categories" class="btn btn-secondary">
-        Back
-      </NuxtLink>
+      <NuxtLink to="/admin/categories" class="btn btn-secondary">Back</NuxtLink>
     </div>
 
     <div class="card mt-3">
       <div class="card-body">
         <form @submit.prevent="submitCategory">
           <!-- Category Name -->
-          <div class="mb-3">
+          <div class="mb-3 mt-3">
             <label for="categoryName" class="form-label">Category Name</label>
             <input
               type="text"
@@ -22,6 +20,15 @@
               placeholder="Enter category name"
               required
             />
+          </div>
+
+          <!-- Category Image -->
+          <div class="mb-3">
+            <label class="form-label">Category Image</label>
+            <input type="file" @change="handleCategoryImageUpload" class="form-control" />
+            <div v-if="category.imageUrl" class="mt-2">
+              <img :src="category.imageUrl" alt="Category Image" style="height: 100px;" />
+            </div>
           </div>
 
           <!-- Subcategories Section -->
@@ -43,7 +50,13 @@
                 <!-- Subcategory Name -->
                 <div class="col-md-6">
                   <label class="form-label">Name</label>
-                  <input type="text" v-model="sub.name" class="form-control" placeholder="Subcategory name" required />
+                  <input
+                    type="text"
+                    v-model="sub.name"
+                    class="form-control"
+                    placeholder="Subcategory name"
+                    required
+                  />
                 </div>
 
                 <!-- Subcategory Image -->
@@ -57,7 +70,6 @@
               </div>
             </div>
 
-            <!-- Add Subcategory Button -->
             <button type="button" class="btn btn-primary" @click="addSubcategory">
               + Add Subcategory
             </button>
@@ -73,16 +85,20 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, useCookie, useRuntimeConfig, useToast } from '#imports'
 
 definePageMeta({ layout: 'admin' })
 
+const toast = useToast()
 const route = useRoute()
 const router = useRouter()
-const categoryId = route.params.id // assumes URL like /admin/categories/edit/:id
+const authToken = useCookie('auth_token')
+const categoryId = route.params.id
 
 const category = ref({
   name: '',
+  image: null,      // File for new category image
+  imageUrl: '',     // Existing category image URL
   subcategories: []
 })
 
@@ -90,19 +106,37 @@ const category = ref({
 const loadCategory = async () => {
   try {
     const config = useRuntimeConfig()
-    const data = await $fetch(`${config.public.apiBase}/categories/${categoryId}`, {
-      headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
+    const response = await $fetch(`${config.public.apiBase}admin/categories/${categoryId}`, {
+      headers: { Authorization: `Bearer ${authToken.value}` }
     })
 
+    const data = response.data
+
     category.value.name = data.name
-    category.value.subcategories = data.subcategories.map(sub => ({
+    category.value.imageUrl = data.image || ''
+    category.value.subcategories = data.sub_categories.map(sub => ({
+      id: sub.id,
       name: sub.name,
-      image: null, // image file to upload (if changed)
-      imageUrl: sub.imageUrl || '' // existing image
+      image: null, // File object if changed
+      imageUrl: sub.image || ''
     }))
   } catch (error) {
     console.error('Error loading category:', error)
-    alert('Failed to load category data.')
+    toast.error({
+      title: 'Error!',
+      message: 'Failed to load category data.',
+      position: 'topRight',
+      layout: 2,
+    })
+  }
+}
+
+// Category image upload
+const handleCategoryImageUpload = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    category.value.image = file
+    category.value.imageUrl = URL.createObjectURL(file)
   }
 }
 
@@ -122,24 +156,39 @@ const submitCategory = async () => {
   try {
     const formData = new FormData()
     formData.append('name', category.value.name)
+    if (category.value.image) formData.append('image', category.value.image)
 
     category.value.subcategories.forEach((sub, i) => {
-      formData.append(`subcategories[${i}][name]`, sub.name)
-      if (sub.image) formData.append(`subcategories[${i}][image]`, sub.image)
+      formData.append(`sub_categories[${i}][name]`, sub.name)
+      if (sub.image) formData.append(`sub_categories[${i}][image]`, sub.image)
+      if (sub.id) formData.append(`sub_categories[${i}][id]`, sub.id)
     })
 
     const config = useRuntimeConfig()
-    await $fetch(`${config.public.apiBase}/categories/${categoryId}`, {
-      method: 'PUT', // use PUT for updating
+    const response = await $fetch(`${config.public.apiBase}admin/update-category/${categoryId}`, {
+      method: 'POST',
       body: formData,
-      headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
+      headers: { Authorization: `Bearer ${authToken.value}` }
     })
 
-    alert('Category updated successfully!')
+    toast.success({
+      title: 'Success!',
+      message: response.message || 'Category updated successfully.',
+      position: 'topRight',
+      layout: 2,
+    })
+
+    // Reset form (optional)
+    category.value = { name: '', image: null, imageUrl: '', subcategories: [] }
     router.push('/admin/categories')
   } catch (error) {
     console.error('Error updating category:', error)
-    alert('Failed to update category.')
+    toast.error({
+      title: 'Error!',
+      message: error.data?.message || 'Failed to update category.',
+      position: 'topRight',
+      layout: 2,
+    })
   }
 }
 

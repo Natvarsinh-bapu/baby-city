@@ -2,45 +2,50 @@
     <div>
         <main class="main">
           <!-- hero section -->
-          <section id="hero" class="hero section">
-              <div class="container" data-aos="fade-up" data-aos-delay="100">
-                  <div class="row align-items-center">
-
-                  <!-- Left Content -->
-                  <div class="col-lg-6">
-                      <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
-                      <div>
-                          <h1 class="mb-0">Baby City</h1>
+          <section class="hero">
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+              <div class="slider-parent">
+                <Swiper
+                  :modules="modules"
+                  :slides-per-view="1"
+                  :loop="true"
+                  :autoplay="{ delay: 3000, disableOnInteraction: false }"
+                  :pagination="{ clickable: true }"
+                  :navigation="false"
+                  class="hero-swiper rounded-3"
+                >
+                  <SwiperSlide v-for="(offer, index) in offers" :key="index">
+                    <NuxtLink :to="{ path: '/products', query: { offerId: offer.id } }">
+                      <div class="border rounded-3 shadow-lg w-100 w-md-75 mb-4 mx-auto bg-transparent" style="background: transparent !important; box-shadow: none;">
+                        <div class="row align-items-center g-0">
+                          <div class="col-12">
+                            <img
+                              :src="offer.image"
+                              :alt="offer.title"
+                              class="rounded w-100 object-fit-cover slider-image"
+                            />
+                          </div>
+                        </div>
                       </div>
-                      <div class="mb-4">
-                          <h5>“Tiny Treasures for Your Little One.”</h5>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Right Image -->
-                  <div class="col-lg-6">
-                      <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
-                      <img src="/assets/img/hero.png" alt="Hero Image" class="img-fluid" />
-                      </div>
-                  </div>
-
-                  </div>
+                    </NuxtLink>
+                  </SwiperSlide>
+                </Swiper>
               </div>
+            </div>
           </section>
 
           <!-- shop by categories -->
           <section id="services" class="services section py-5">
-            <div class="container text-center mb-5" data-aos="fade-up">
-              <h2 class="fw-bold">Shop by Category</h2>
+            <div class="container text-center section-title-custom" data-aos="fade-up">
+              <h2 class="fw-bold">Category</h2>
             </div>
 
             <div class="container" data-aos="fade-up" data-aos-delay="100">
-              <div class="row g-4">
+              <div class="d-flex flex-wrap">
                 <div
                   v-for="(item, index) in categories"
                   :key="index"
-                  class="col-6 col-sm-6 col-md-3"
+                  class="category-card-parent p-1"
                   data-aos="fade-up"
                   data-aos-delay="100"
                 >
@@ -68,6 +73,24 @@
 </template>
 
 <script setup>
+  import { Swiper, SwiperSlide } from "swiper/vue";
+  import { Navigation, Pagination, Autoplay } from "swiper/modules"; // ✅ Vue 3/Nuxt 3 correct import
+
+  // Swiper styles
+  import "swiper/css";
+  import "swiper/css/navigation";
+  import "swiper/css/pagination";
+
+  // Offers data (example)
+  const offers = [
+    { id: 1, title: "Offer 1", image: "/assets/img/offer.jpeg" },
+    { id: 2, title: "Offer 2", image: "/assets/img/offer.jpeg" },
+    { id: 3, title: "Offer 3", image: "/assets/img/offer.jpeg" },
+  ];
+
+  // Register Swiper modules
+  const modules = [Navigation, Pagination, Autoplay];
+
   const categories = [
     { title: "Clothes", image: "/assets/img/clothes.jpeg" },
     { title: "Cap", image: "/assets/img/cap.jpeg" },

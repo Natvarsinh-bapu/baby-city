@@ -1,13 +1,18 @@
 <template>
-  <div class="d-flex align-items-center justify-content-center vh-100 bg-light">
+  <div class="d-flex align-items-center justify-content-center vh-100 bg-light p-3">
     <div class="card shadow-lg p-4 rounded-4" style="max-width: 400px; width: 100%;">
-      
+
       <!-- Logo & Title -->
-      <div class="text-center mb-4">
-        <a href="/" class="d-inline-flex align-items-center justify-content-center text-decoration-none">
-          <img src="/assets/img/logo.png" alt="Logo" class="me-2" style="height: 40px; object-fit: contain;" />
-          <h2 class="sitename mb-0" style="font-size: 1.5rem; line-height: 40px;">Baby City</h2>
-        </a>
+      <div class="mb-4 text-center">
+        <NuxtLink to="/" class="logo d-inline-flex align-items-center justify-content-center text-decoration-none">
+          <img
+            src="/assets/img/logo.png"
+            alt="Logo"
+            class="me-2"
+            style="height: 40px; object-fit: contain;"
+          />
+          <h1 class="mb-0 fw-bold" style="font-size: 1.5rem; line-height: 40px;">Baby City</h1>
+        </NuxtLink>
       </div>
 
       <!-- Reset Password Form -->
@@ -49,10 +54,9 @@
 <script setup>
 import { ref } from "vue";
 
-// Disable Nuxt layout
 definePageMeta({
-  layout: false,
-});
+  layout: 'admin-head'
+})
 
 const form = ref({
   password: "",

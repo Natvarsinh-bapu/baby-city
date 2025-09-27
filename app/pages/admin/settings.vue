@@ -1,22 +1,15 @@
 <template>
   <div>
-    <div class="pagetitle">
+    <!-- Page Title + Back Button -->
+    <div class="pagetitle d-flex justify-content-between align-items-center">
       <h1>Settings</h1>
+      <NuxtLink to="/admin/dashboard" class="btn btn-secondary">Back</NuxtLink>
     </div>
 
     <div class="card mt-3">
       <div class="card-body">
         <form @submit.prevent="updateSettings">
-          <div class="row">
-            <!-- Logo Upload -->
-            <div class="col-md-6 mb-3">
-              <label for="logo" class="form-label">Logo</label>
-              <input type="file" id="logo" @change="handleLogoUpload" class="form-control" />
-              <div v-if="settings.logoUrl" class="mt-2">
-                <img :src="settings.logoUrl" alt="Logo" style="height: 80px;" />
-              </div>
-            </div>
-
+          <div class="row mt-3">
             <!-- Slogan -->
             <div class="col-md-6 mb-3">
               <label for="slogan" class="form-label">Slogan</label>
@@ -41,39 +34,38 @@
               <input type="email" id="email" v-model="settings.email" class="form-control" placeholder="Enter email" required />
             </div>
 
-            <!-- Facebook -->
+            <!-- Social Links -->
             <div class="col-md-6 mb-3">
-              <label for="facebook" class="form-label">Facebook Link</label>
+              <label for="facebook" class="form-label">Facebook</label>
               <input type="url" id="facebook" v-model="settings.facebook" class="form-control" placeholder="Enter Facebook URL" />
             </div>
 
-            <!-- Instagram -->
             <div class="col-md-6 mb-3">
-              <label for="instagram" class="form-label">Instagram Link</label>
+              <label for="instagram" class="form-label">Instagram</label>
               <input type="url" id="instagram" v-model="settings.instagram" class="form-control" placeholder="Enter Instagram URL" />
             </div>
 
-            <!-- WhatsApp -->
             <div class="col-md-6 mb-3">
-              <label for="whatsapp" class="form-label">WhatsApp Link</label>
+              <label for="whatsapp" class="form-label">WhatsApp</label>
               <input type="url" id="whatsapp" v-model="settings.whatsapp" class="form-control" placeholder="Enter WhatsApp URL" />
             </div>
 
-            <!-- YouTube -->
             <div class="col-md-6 mb-3">
-              <label for="youtube" class="form-label">YouTube Link</label>
+              <label for="youtube" class="form-label">YouTube</label>
               <input type="url" id="youtube" v-model="settings.youtube" class="form-control" placeholder="Enter YouTube URL" />
             </div>
 
-            <!-- Telegram -->
             <div class="col-md-6 mb-3">
-              <label for="telegram" class="form-label">Telegram Link</label>
+              <label for="telegram" class="form-label">Telegram</label>
               <input type="url" id="telegram" v-model="settings.telegram" class="form-control" placeholder="Enter Telegram URL" />
             </div>
 
-            <!-- Update Button -->
+            <!-- Submit Button -->
             <div class="col-12 mt-3">
-              <button type="submit" class="btn btn-success btn-md">Update Settings</button>
+              <button type="submit" class="btn btn-success" :disabled="loading">
+                <span v-if="loading">Updating...</span>
+                <span v-else>Update Settings</span>
+              </button>
             </div>
           </div>
         </form>
@@ -84,13 +76,16 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 definePageMeta({ layout: 'admin' })
 
+const router = useRouter()
 const config = useRuntimeConfig()
+const toast = useToast()
+const loading = ref(false)
+
 const settings = ref({
-  logo: null,
-  logoUrl: '',
   slogan: '',
   address: '',
   mobile: '',
@@ -105,24 +100,20 @@ const settings = ref({
 // Fetch current settings
 onMounted(async () => {
   try {
-    const response = await $fetch(`${config.public.apiBase}/settings`, {
+    const response = await $fetch(`${config.public.apiBase}admin/settings`, {
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
     const data = response.data || {}
     settings.value = { ...settings.value, ...data }
   } catch (error) {
     console.error('Error fetching settings:', error)
+    toast.error({ title: 'Error!', message: 'Failed to load settings.', position: 'topRight', layout: 2 })
   }
 })
 
-// Handle logo file upload
-const handleLogoUpload = (event) => {
-  settings.value.logo = event.target.files[0]
-  settings.value.logoUrl = URL.createObjectURL(event.target.files[0])
-}
-
 // Update settings
 const updateSettings = async () => {
+  loading.value = true
   try {
     const payload = new FormData()
     payload.append('slogan', settings.value.slogan)
@@ -134,18 +125,23 @@ const updateSettings = async () => {
     payload.append('whatsapp', settings.value.whatsapp)
     payload.append('youtube', settings.value.youtube)
     payload.append('telegram', settings.value.telegram)
-    if (settings.value.logo) payload.append('logo', settings.value.logo)
 
-    await $fetch(`${config.public.apiBase}/settings`, {
-      method: 'PUT',
+    const response = await $fetch(`${config.public.apiBase}admin/update-settings`, {
+      method: 'POST',
       body: payload,
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
 
-    alert('Settings updated successfully!')
+    if (response.success) {
+      toast.success({ title: 'Success!', message: response.message || 'Settings updated successfully.', position: 'topRight', layout: 2 })
+    } else {
+      toast.error({ title: 'Error!', message: response.message || 'Failed to update settings.', position: 'topRight', layout: 2 })
+    }
   } catch (error) {
     console.error('Error updating settings:', error)
-    alert('Failed to update settings.')
+    toast.error({ title: 'Error!', message: error?.data?.message || 'Something went wrong.', position: 'topRight', layout: 2 })
+  } finally {
+    loading.value = false
   }
 }
 </script>

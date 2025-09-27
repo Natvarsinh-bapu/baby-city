@@ -459,7 +459,8 @@ h6 {
 }
 
 .footer .footer-top {
-  padding-top: 50px;
+  /* padding-top: 50px; */
+  padding-top: 0;
 }
 
 .footer .footer-about .logo {
@@ -707,7 +708,7 @@ section,
 .hero {
   position: relative;
   padding-top: 100px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color), transparent 95%) 50%, color-mix(in srgb, var(--accent-color), transparent 98%) 25%, transparent 50%);
+  /* background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color), transparent 95%) 50%, color-mix(in srgb, var(--accent-color), transparent 98%) 25%, transparent 50%); */
 }
 
 .hero::before {

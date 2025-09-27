@@ -1,6 +1,6 @@
 <template>
   <!-- Fullscreen wrapper -->
-  <div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="min-vh-100 d-flex align-items-center justify-content-center bg-light p-3">
     <!-- Card -->
     <div class="card shadow-lg p-4 rounded-4 w-100" style="max-width: 400px;">
       <div class="mb-4 text-center">
@@ -49,10 +49,13 @@
           </NuxtLink>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100" :disabled="loading">
-          <span v-if="loading">Logging in...</span>
-          <span v-else>Login</span>
-        </button>
+        <div class="col-12">
+          <button v-if="!loading" class="btn btn-primary w-100" type="submit">Login</button>
+
+          <div v-if="loading" class="bg-primary w-100 p-1 d-flex justify-content-center text-white">
+            <div class="spinner-border" role="status"></div>
+          </div>
+        </div>
 
         <div v-if="error" class="text-danger text-center mt-3">{{ error }}</div>
       </form>
@@ -62,7 +65,7 @@
 
 <script setup>
 definePageMeta({
-  layout: false
+  layout: 'admin-head'
 })
 
 import { ref, onMounted } from 'vue'
@@ -106,7 +109,7 @@ async function handleLogin() {
 
     loading.value = true
 
-    const response = await $fetch(`${config.public.apiBase}/login`, {
+    const response = await $fetch(`${config.public.apiBase}admin/login`, {
       method: 'POST',
       body: {
         email: email.value,
@@ -117,12 +120,24 @@ async function handleLogin() {
     if (response.success) {
       authToken.value = response.data.token
 
-      toast.success('Login successful!')
+      toast.success({
+        title: 'Success!',
+        message: response.message || 'Login successfully.',
+        position: 'topRight',
+        layout: 2,
+      })
+
       router.push('/admin/dashboard')
     }
   } catch (err) {
     error.value = 'Invalid email or password'
-    toast.error(err?.data?.message || 'Something went wrong.')
+
+    toast.error({
+      title: 'Error!',
+      message: err?.data?.message || 'Something went wrong.',
+      position: 'topRight',
+      layout: 2,
+    })
   } finally {
     loading.value = false
   }

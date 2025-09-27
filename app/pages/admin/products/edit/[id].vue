@@ -133,7 +133,7 @@ const checkAllSubcategories = ref(false)
 // Fetch categories
 onMounted(async () => {
   try {
-    const response = await $fetch(`${config.public.apiBase}/categories`, {
+    const response = await $fetch(`${config.public.apiBase}admin/categories`, {
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
     categories.value = response.data || []
@@ -145,7 +145,7 @@ onMounted(async () => {
 // Fetch subcategories
 onMounted(async () => {
   try {
-    const response = await $fetch(`${config.public.apiBase}/subcategories`, {
+    const response = await $fetch(`${config.public.apiBase}admin/subcategories`, {
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
     subcategories.value = response.data || []
@@ -157,7 +157,7 @@ onMounted(async () => {
 // Load product data
 const loadProduct = async () => {
   try {
-    const data = await $fetch(`${config.public.apiBase}/products/${productId}`, {
+    const data = await $fetch(`${config.public.apiBase}admin/products/${productId}`, {
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
 
@@ -234,7 +234,7 @@ const updateProduct = async () => {
     payload.append('description', form.value.description)
     if (form.value.image) payload.append('image', form.value.image)
 
-    await $fetch(`${config.public.apiBase}/products/${productId}`, {
+    await $fetch(`${config.public.apiBase}admin/products/${productId}`, {
       method: 'PUT',
       body: payload,
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }

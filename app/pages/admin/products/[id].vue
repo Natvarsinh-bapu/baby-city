@@ -72,7 +72,7 @@ const product = ref({
 onMounted(async () => {
   const productId = route.params.id
   try {
-    const response = await $fetch(`${config.public.apiBase}/products/${productId}`, {
+    const response = await $fetch(`${config.public.apiBase}admin/products/${productId}`, {
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
     const data = response.data

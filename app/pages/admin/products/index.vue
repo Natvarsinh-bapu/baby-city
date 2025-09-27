@@ -52,7 +52,7 @@ const config = useRuntimeConfig()
 
 onMounted(async () => {
   try {
-    const response = await $fetch(`${config.public.apiBase}/products`, {
+    const response = await $fetch(`${config.public.apiBase}admin/products`, {
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
     products.value = response.data || []
@@ -64,7 +64,7 @@ onMounted(async () => {
 const deleteProduct = async (id) => {
   if (!confirm('Delete this product?')) return
   try {
-    await $fetch(`${config.public.apiBase}/products/${id}`, {
+    await $fetch(`${config.public.apiBase}admin/products/${id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })

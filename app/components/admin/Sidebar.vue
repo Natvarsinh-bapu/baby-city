@@ -61,7 +61,7 @@
 
   async function handleLogout() {
     try {
-      const response = await $fetch(`${config.public.apiBase}/logout`, {
+      const response = await $fetch(`${config.public.apiBase}admin/logout`, {
         method: 'POST',
         headers: {
           Accept: 'Application/json',

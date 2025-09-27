@@ -28,6 +28,10 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
+.product-card-parent {
+  width: 20%;
+}
+
 .product-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
@@ -54,6 +58,15 @@
   opacity: 0.8;
 }
 
+.search-box-parent {
+  margin-bottom: 15px;
+  padding: 0 10px;
+}
+
+.hoverable-card-parent {
+  padding: 10px;
+}
+
 .hoverable-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -70,13 +83,53 @@
   padding: 0.4em 0.75em;
 }
 
-/* hide sidebar toggle button on desktop view */
-.toggle-sidebar-btn {
-  display: none;
+.product-page-title {
+  margin-bottom: 10px;
+}
+
+.section-title-custom {
+    margin-bottom: 10px;
+}
+
+.product-name {
+  padding: 2px 10px;
+}
+
+.category-card-parent {
+  width: 25%;
+}
+
+.hero-swiper {
+  height: 260px;
+}
+
+.slider-image {
+  height: 260px;
+}
+
+section, .section {
+  padding-bottom: 0;
 }
 
 /* Mobile view (xs/sm) */
 @media (max-width: 576px) {
+  .hero-swiper {
+    height: 140px;
+  }
+
+  .slider-image {
+    height: 140px;
+  }
+
+  .slider-parent {
+    padding: 0 10px;
+  }
+
+  .hero {
+    padding-top: 70px;
+    padding-bottom: 0 !important;
+  }
+
   .category-card {
     padding: 5px;
   }
@@ -94,21 +147,73 @@
     margin-bottom: 0;
   }
 
-  .toggle-sidebar-btn {
-    display: block;
+  .product-page-title {
+    margin-bottom: 0;
   }
-}
 
-/* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) and (max-width: 767.98px) {
-  .toggle-sidebar-btn {
-    display: block;
+  .py-5 {
+    padding-top: 1rem !important;
+    padding-bottom: 0;
   }
-}
 
-/* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) and (max-width: 991.98px) {
-  .toggle-sidebar-btn {
-    display: block;
+  .container {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .search-box-parent {
+    margin-bottom: 2px;
+    padding: 4px;
+  }
+
+  .hoverable-card-parent {
+    padding: 0 2px;
+  }
+
+  .product-card-parent {
+    width: 50%;
+    margin-bottom: 5px;
+  }
+
+  .section-title-custom {
+    margin-bottom: 0;
+  }
+
+  section, .section {
+    padding-bottom: 0;
+  }
+
+  .mb-5 {
+    margin-bottom: 0 !important;
+  }
+
+  .product-name {
+    padding: 0 5px;
+  }
+
+  .category-card-parent {
+    width: 50%;
+  }
+
+  .header .header-container {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 10px 5px 10px 4px;
+  }
+
+  .footer .footer-about .logo {
+    margin-bottom: 0 !important;
+  }
+
+  .footer .footer-links ul li {
+    padding: 5px 0 !important;
+  }
+
+  .footer .footer-links {
+      margin-bottom: 0 !important;
+  }
+
+  .product-details-parent {
+    padding: 0 4px;
   }
 }

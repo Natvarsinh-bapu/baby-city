@@ -1,7 +1,7 @@
 <template>
   <footer id="footer" class="footer">
     <div class="container footer-top">
-      <div class="row gy-4 text-center text-md-start justify-content-center">
+      <div class="row gy-4 text-md-start justify-content-center">
         <div class="col-lg-4 col-md-6 col-12 d-flex flex-column align-items-center align-items-md-start footer-about">
           <a href="/" class="logo d-flex align-items-center">
             <img src="/assets/img/logo.png" alt="">
@@ -33,8 +33,7 @@
         </div>
 
         <div class="col-lg-2 col-md-3 col-12 d-flex flex-column align-items-center footer-links">
-          <h4>Links</h4>
-          <ul class="text-center">
+          <ul>
             <li>
               <NuxtLink to="/">Home</NuxtLink>
             </li>
@@ -51,9 +50,6 @@
 
     <div class="container copyright text-center mt-4">
       <p>© <span>Copyright</span> <strong class="px-1 sitename">Baby City</strong> <span>All Rights Reserved</span></p>
-      <div class="credits">
-        Designed by <a href="https://wa.me/918490853507" target="_blank">Natvarsinh</a>
-      </div>
     </div>
   </footer>
 </template>

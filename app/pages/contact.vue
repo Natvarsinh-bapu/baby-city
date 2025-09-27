@@ -5,10 +5,11 @@
       <section class="section py-5 mt-5">
         <div class="container text-center mb-4" data-aos="fade-up">
           <h2 class="fw-bold">Contact Us</h2>
-          <p class="text-muted">We’d love to hear from you. Fill out the form and our team will get back to you as soon as possible.</p>
+          <p class="text-muted">
+            We’d love to hear from you. Fill out the form and our team will get back to you as soon as possible.
+          </p>
         </div>
 
-        <!-- Contact Form and Info -->
         <div class="container">
           <div class="row g-5 justify-content-center">
             <!-- Contact Form -->
@@ -30,7 +31,10 @@
                     <textarea id="message" v-model="form.message" rows="5" class="form-control" placeholder="Message" required></textarea>
                   </div>
 
-                  <button type="submit" class="btn btn-primary px-4">Send Message</button>
+                  <button type="submit" class="btn btn-primary px-4" :disabled="loading">
+                    <span v-if="loading">Sending...</span>
+                    <span v-else>Send Message</span>
+                  </button>
                 </form>
               </div>
             </div>
@@ -56,21 +60,11 @@
                 <div class="mt-3">
                   <h5 class="fw-bold mb-2">Follow Us</h5>
                   <div class="d-flex gap-3">
-                    <a href="#" class="social-icon">
-                      <img src="/assets/img/instagram.png" alt="Instagram" width="32" height="32" />
-                    </a>
-                    <a href="#" class="social-icon">
-                      <img src="/assets/img/whatsapp.png" alt="WhatsApp" width="32" height="32" />
-                    </a>
-                    <a href="#" class="social-icon">
-                      <img src="/assets/img/youtube.png" alt="YouTube" width="32" height="32" />
-                    </a>
-                    <a href="#" class="social-icon">
-                      <img src="/assets/img/telegram.png" alt="Telegram" width="32" height="32" />
-                    </a>
-                    <a href="#" class="social-icon">
-                      <img src="/assets/img/facebook.png" alt="Facebook" width="32" height="32" />
-                    </a>
+                    <a href="#" class="social-icon"><img src="/assets/img/instagram.png" alt="Instagram" width="32" height="32" /></a>
+                    <a href="#" class="social-icon"><img src="/assets/img/whatsapp.png" alt="WhatsApp" width="32" height="32" /></a>
+                    <a href="#" class="social-icon"><img src="/assets/img/youtube.png" alt="YouTube" width="32" height="32" /></a>
+                    <a href="#" class="social-icon"><img src="/assets/img/telegram.png" alt="Telegram" width="32" height="32" /></a>
+                    <a href="#" class="social-icon"><img src="/assets/img/facebook.png" alt="Facebook" width="32" height="32" /></a>
                   </div>
                 </div>
               </div>
@@ -85,6 +79,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useCookie, useRuntimeConfig } from '#imports'
+
+const config = useRuntimeConfig()
+const toast = useToast()
+const loading = ref(false)
 
 const form = ref({
   name: '',
@@ -92,15 +91,25 @@ const form = ref({
   message: ''
 })
 
-const submitForm = () => {
-  // Placeholder action — replace with actual submission logic or API call
-  alert(`Thanks, ${form.value.name}! Your message has been sent.`)
+const submitForm = async () => {
+  loading.value = true
+  try {
+    const response = await $fetch(`${config.public.apiBase}send-message`, {
+      method: 'POST',
+      body: form.value
+    })
 
-  // Clear form after submission
-  form.value = {
-    name: '',
-    email: '',
-    message: ''
+    if (response.success) {
+      toast.success({ title: 'Success!', message: response.message || 'Message sent successfully!', position: 'topRight', layout: 2 })
+      form.value = { name: '', email: '', message: '' }
+    } else {
+      toast.error({ title: 'Error!', message: response.message || 'Failed to send message.', position: 'topRight', layout: 2 })
+    }
+  } catch (error) {
+    console.error('Error updating settings:', error)
+    toast.error({ title: 'Error!', message: error?.data?.message || 'Something went wrong.', position: 'topRight', layout: 2 })
+  } finally {
+    loading.value = false
   }
 }
 </script>

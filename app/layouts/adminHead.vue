@@ -1,18 +1,10 @@
 <template>
     <div>
-      <Header />
-      <Sidebar />
-      <main id="main" class="main">
       <slot />
-      </main>
-      <Footer />
     </div>
 </template>
 
 <script setup>
-  import Header from '~/components/admin/Header.vue'
-  import Sidebar from '~/components/admin/Sidebar.vue';
-  import Footer from '~/components/admin/Footer.vue';
   import { useHead } from '#imports'
 
   // Admin-specific head
