@@ -14,7 +14,7 @@
   import { useHead } from '#imports'
 
   const seo = {
-    title: 'Baby City - Best Baby Products',
+    title: 'Baby City',
     description: 'Baby City offers a wide range of baby products including toys, clothes, and essentials for your little one.',
     keywords: 'baby products, toys, baby clothes, newborn essentials, baby care'
   }

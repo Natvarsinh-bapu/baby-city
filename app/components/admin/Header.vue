@@ -2,8 +2,8 @@
   <header :class="headerClasses" id="header">
     <div class="d-flex align-items-center justify-content-between">
       <NuxtLink to="/admin" class="logo d-flex align-items-center">
-        <img src="/assets/img/logo.png" alt="Logo" />
-        <span class="d-none d-lg-block">Baby City Admin</span>
+        <img src="/assets/img/logo-rectangle.jpeg" alt="Logo" />
+        <span class="d-none d-lg-block">Admin</span>
       </NuxtLink>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>

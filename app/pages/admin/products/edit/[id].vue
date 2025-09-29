@@ -3,98 +3,110 @@
     <!-- Page Title + Back Button -->
     <div class="pagetitle d-flex justify-content-between align-items-center">
       <h1>Edit Product</h1>
-      <NuxtLink to="/admin/products" class="btn btn-secondary btn-sm">
-        Back to Products
-      </NuxtLink>
+      <NuxtLink to="/admin/products" class="btn btn-secondary">Back</NuxtLink>
     </div>
 
     <div class="card mt-3">
       <div class="card-body">
-        <form @submit.prevent="updateProduct">
+        <form @submit.prevent="submitProduct">
+
           <!-- Product Name -->
-          <div class="mb-3">
-            <label for="name" class="form-label">Product Name</label>
-            <input type="text" id="name" v-model="form.name" class="form-control" required />
-          </div>
-
-          <!-- Categories with Check All -->
-          <div class="mb-3">
-            <label class="form-label">Categories</label>
-            <div class="form-check mb-2">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="check-all-categories"
-                v-model="checkAllCategories"
-                @change="toggleCheckAllCategories"
-              />
-              <label class="form-check-label" for="check-all-categories">Check All Categories</label>
-            </div>
-            <div class="d-flex flex-wrap">
-              <div v-for="cat in categories" :key="cat.id" class="form-check me-3 mb-2">
-                <input
-                  type="checkbox"
-                  :id="'cat-' + cat.id"
-                  class="form-check-input"
-                  :value="cat.id"
-                  v-model="form.categoryIds"
-                />
-                <label :for="'cat-' + cat.id" class="form-check-label">{{ cat.name }}</label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Subcategories with Check All -->
-          <div class="mb-3">
-            <label class="form-label">Subcategories</label>
-            <div class="form-check mb-2">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="check-all-subcategories"
-                v-model="checkAllSubcategories"
-                @change="toggleCheckAllSubcategories"
-              />
-              <label class="form-check-label" for="check-all-subcategories">Check All Subcategories</label>
-            </div>
-            <div class="d-flex flex-wrap">
-              <div v-for="sub in filteredSubcategories" :key="sub.id" class="form-check me-3 mb-2">
-                <input
-                  type="checkbox"
-                  :id="'sub-' + sub.id"
-                  class="form-check-input"
-                  :value="sub.id"
-                  v-model="form.subcategoryIds"
-                />
-                <label :for="'sub-' + sub.id" class="form-check-label">{{ sub.name }}</label>
-              </div>
-            </div>
-            <small class="text-muted">Subcategories filtered by selected categories.</small>
-          </div>
-
-          <!-- Price -->
-          <div class="mb-3">
-            <label for="price" class="form-label">Price</label>
-            <input type="number" id="price" v-model="form.price" class="form-control" required />
+          <div class="mb-3 mt-3">
+            <label class="form-label">Product Name</label>
+            <input type="text" v-model="product.name" class="form-control" placeholder="Enter product name" required />
           </div>
 
           <!-- Description -->
           <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea id="description" v-model="form.description" class="form-control" rows="4"></textarea>
+            <label class="form-label">Description</label>
+            <textarea v-model="product.description" class="form-control" rows="4" placeholder="Description"></textarea>
           </div>
 
-          <!-- Image Upload -->
+          <!-- Short Description -->
           <div class="mb-3">
-            <label for="image" class="form-label">Product Image</label>
-            <input type="file" id="image" @change="handleFileUpload" class="form-control" />
-            <div v-if="form.imageUrl" class="mt-2">
-              <img :src="form.imageUrl" alt="Product Image" style="height: 80px;" />
+            <label class="form-label">Short Description</label>
+            <textarea v-model="product.short_description" class="form-control" rows="2" placeholder="Short Description"></textarea>
+          </div>
+
+          <!-- Pricing -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Price</label>
+              <input type="number" v-model="product.price" class="form-control" step="0.01" placeholder="Price" required />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Sale Price</label>
+              <input type="number" v-model="product.sale_price" class="form-control" step="0.01" placeholder="Sale Price" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">In Stock</label>
+              <select v-model="product.in_stock" class="form-select">
+                <option :value="true">Yes</option>
+                <option :value="false">No</option>
+              </select>
             </div>
           </div>
 
+          <!-- Categories + Subcategories -->
+          <div class="mb-3">
+            <h5>Categories</h5>
+            <div v-if="categories.length" class="row">
+              <div v-for="cat in categories" :key="cat.id" class="col-md-6 mb-3">
+                <!-- Category Label -->
+                <div class="fw-bold">{{ cat.name }}</div>
+
+                <!-- Sub Categories -->
+                <div v-if="cat.sub_categories?.length" class="ms-4 mt-2">
+                  <div v-for="sub in cat.sub_categories" :key="sub.id">
+                    <label>
+                      <input
+                        type="checkbox"
+                        :value="sub.id"
+                        v-model="product.subcategories"
+                      />
+                      {{ sub.name }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-muted">Loading categories...</div>
+          </div>
+
+          <!-- Main Image -->
+          <div class="mb-3">
+            <label class="form-label">Main Image</label>
+            <input type="file" @change="handleMainImageUpload" class="form-control" />
+            <div v-if="product.imageUrl" class="mt-2">
+              <img :src="product.imageUrl" alt="Main Image" style="height: 100px;" />
+            </div>
+          </div>
+
+          <!-- Gallery -->
+          <div class="mb-3">
+            <label class="form-label">Gallery Images</label>
+            <input type="file" @change="handleGalleryUpload" class="form-control" multiple />
+            <div class="mt-2 d-flex gap-2 flex-wrap">
+              <img v-for="(img, i) in product.galleryUrls" :key="i" :src="img" style="height: 80px;" />
+            </div>
+          </div>
+
+          <!-- Attributes -->
+          <div class="mb-3">
+            <h5>Attributes</h5>
+            <div v-for="(attr, index) in product.attributes" :key="index" class="d-flex gap-2 mb-2">
+              <input type="text" v-model="attr.key" class="form-control" placeholder="Attribute Key" required />
+              <input type="text" v-model="attr.value" class="form-control" placeholder="Attribute Value" required />
+              <button type="button" class="btn btn-danger btn-sm" @click="removeAttribute(index)">Remove</button>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" @click="addAttribute">Add Attribute</button>
+          </div>
+
           <!-- Submit Button -->
-          <button type="submit" class="btn btn-success">Update Product</button>
+          <button type="submit" class="btn btn-success mt-3" :disabled="loading">
+            <span v-if="loading">Updating...</span>
+            <span v-else>Update Product</span>
+          </button>
         </form>
       </div>
     </div>
@@ -102,149 +114,140 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 definePageMeta({ layout: 'admin' })
 
 const route = useRoute()
 const router = useRouter()
+const toast = useToast()
+const config = useRuntimeConfig()
+const loading = ref(false)
 const productId = route.params.id
 
-const config = useRuntimeConfig()
-
-const form = ref({
+const product = ref({
   name: '',
-  categoryIds: [],
-  subcategoryIds: [],
-  price: '',
   description: '',
+  short_description: '',
+  price: '',
+  sale_price: '',
+  in_stock: true,
+  active: true,
   image: null,
-  imageUrl: ''
+  imageUrl: '',
+  gallery: [],
+  galleryUrls: [],
+  attributes: [],
+  subcategories: []   // ✅ subcategory IDs
 })
 
 const categories = ref([])
-const subcategories = ref([])
 
-// Check All flags
-const checkAllCategories = ref(false)
-const checkAllSubcategories = ref(false)
-
-// Fetch categories
-onMounted(async () => {
+// Load categories
+const loadCategories = async () => {
   try {
     const response = await $fetch(`${config.public.apiBase}admin/categories`, {
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
-    categories.value = response.data || []
-  } catch (error) {
-    console.error('Error fetching categories:', error)
+    if (response.success) categories.value = response.data
+  } catch (err) {
+    console.error(err)
+    toast.error({ title: 'Error!', message: 'Failed to load categories.', position: 'topRight', layout: 2 })
   }
-})
+}
 
-// Fetch subcategories
-onMounted(async () => {
-  try {
-    const response = await $fetch(`${config.public.apiBase}admin/subcategories`, {
-      headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
-    })
-    subcategories.value = response.data || []
-  } catch (error) {
-    console.error('Error fetching subcategories:', error)
-  }
-})
-
-// Load product data
+// Load product
 const loadProduct = async () => {
   try {
-    const data = await $fetch(`${config.public.apiBase}admin/products/${productId}`, {
+    const response = await $fetch(`${config.public.apiBase}admin/products/${productId}`, {
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
-
-    form.value.name = data.name
-    form.value.price = data.price
-    form.value.description = data.description
-    form.value.categoryIds = data.categoryIds || []
-    form.value.subcategoryIds = data.subcategoryIds || []
-    form.value.imageUrl = data.imageUrl || ''
-
-    checkAllCategories.value = form.value.categoryIds.length === categories.value.length
-    checkAllSubcategories.value = form.value.subcategoryIds.length === filteredSubcategories.value.length
-  } catch (error) {
-    console.error('Error loading product:', error)
-    alert('Failed to load product data.')
+    if (response.success) {
+      const data = response.data
+      product.value = {
+        ...product.value,
+        ...data,
+        imageUrl: data.imageUrl || '',
+        galleryUrls: data.galleryUrls || [],
+        attributes: data.attributes || [],
+        subcategories: data.sub_categories?.map(s => s.sub_category_id) || []
+      }
+    }
+  } catch (err) {
+    console.error(err)
+    toast.error({ title: 'Error!', message: 'Failed to load product.', position: 'topRight', layout: 2 })
   }
 }
 
-onMounted(loadProduct)
-
-// Filter subcategories based on selected categories
-const filteredSubcategories = computed(() => {
-  if (form.value.categoryIds.length === 0) return subcategories.value
-  return subcategories.value.filter(sub => form.value.categoryIds.includes(sub.categoryId))
+onMounted(() => {
+  loadCategories()
+  loadProduct()
 })
 
-// Watch category checkboxes to sync "Check All"
-watch(
-  () => form.value.categoryIds,
-  val => {
-    checkAllCategories.value = val.length === categories.value.length
-  },
-  { deep: true }
-)
-
-// Watch subcategory checkboxes to sync "Check All"
-watch(
-  () => form.value.subcategoryIds,
-  val => {
-    checkAllSubcategories.value = val.length === filteredSubcategories.value.length
-  },
-  { deep: true }
-)
-
-// Toggle Check All Categories
-const toggleCheckAllCategories = () => {
-  form.value.categoryIds = checkAllCategories.value ? categories.value.map(c => c.id) : []
-}
-
-// Toggle Check All Subcategories
-const toggleCheckAllSubcategories = () => {
-  form.value.subcategoryIds = checkAllSubcategories.value
-    ? filteredSubcategories.value.map(s => s.id)
-    : []
-}
-
-// Handle image upload
-const handleFileUpload = event => {
-  const file = event.target.files[0]
+// Images
+const handleMainImageUpload = (e) => {
+  const file = e.target.files[0]
   if (file) {
-    form.value.image = file
-    form.value.imageUrl = URL.createObjectURL(file)
+    product.value.image = file
+    product.value.imageUrl = URL.createObjectURL(file)
   }
 }
 
-// Submit product update
-const updateProduct = async () => {
-  try {
-    const payload = new FormData()
-    payload.append('name', form.value.name)
-    form.value.categoryIds.forEach(id => payload.append('categoryIds[]', id))
-    form.value.subcategoryIds.forEach(id => payload.append('subcategoryIds[]', id))
-    payload.append('price', form.value.price)
-    payload.append('description', form.value.description)
-    if (form.value.image) payload.append('image', form.value.image)
+const handleGalleryUpload = (e) => {
+  const files = Array.from(e.target.files)
+  product.value.gallery = files
+  product.value.galleryUrls = files.map(f => URL.createObjectURL(f))
+}
 
-    await $fetch(`${config.public.apiBase}admin/products/${productId}`, {
-      method: 'PUT',
-      body: payload,
+// Attributes
+const addAttribute = () => product.value.attributes.push({ key: '', value: '' })
+const removeAttribute = (index) => product.value.attributes.splice(index, 1)
+
+// Submit
+const submitProduct = async () => {
+  if (!product.value.name || !product.value.price) {
+    toast.error({ title: 'Error!', message: 'Please fill required fields (Name, Price).', position: 'topRight', layout: 2 })
+    return
+  }
+
+  loading.value = true
+  try {
+    const formData = new FormData()
+
+    for (const key in product.value) {
+      if (['gallery', 'image', 'attributes', 'variants', 'subcategories'].includes(key)) continue
+      formData.append(key, product.value[key])
+    }
+
+    if (product.value.image) formData.append('image', product.value.image)
+    product.value.gallery.forEach(f => formData.append('gallery[]', f))
+    product.value.attributes.forEach((attr, index) => {
+      formData.append(`attributes[${index}][key]`, attr.key)
+      formData.append(`attributes[${index}][value]`, attr.value)
+    })
+
+    product.value.subcategories.forEach(id => {
+      formData.append('subcategories[]', id)
+    })
+
+    const response = await $fetch(`${config.public.apiBase}admin/update-product/${productId}`, {
+      method: 'POST',
+      body: formData,
       headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
     })
 
-    alert('Product updated successfully!')
-    router.push('/admin/products')
-  } catch (error) {
-    console.error('Error updating product:', error)
-    alert('Failed to update product.')
+    if (response.success) {
+      toast.success({ title: 'Success!', message: response.message || 'Product updated successfully.', position: 'topRight', layout: 2 })
+      router.push('/admin/products')
+    } else {
+      toast.error({ title: 'Error!', message: response.message || 'Failed to update product.', position: 'topRight', layout: 2 })
+    }
+  } catch (err) {
+    console.error(err)
+    toast.error({ title: 'Error!', message: err?.data?.message || 'Something went wrong.', position: 'topRight', layout: 2 })
+  } finally {
+    loading.value = false
   }
 }
 </script>

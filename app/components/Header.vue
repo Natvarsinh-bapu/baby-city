@@ -4,15 +4,16 @@
 
       <!-- Logo -->
       <a href="/" class="logo d-flex align-items-center me-auto me-xl-0">
-        <img src="/assets/img/logo.png" alt="Logo" />
-        <h1 class="sitename">Baby City</h1>
+        <img src="/assets/img/logo-rectangle.jpeg" alt="Logo" />
       </a>
 
       <!-- Navigation -->
       <nav id="navmenu" class="navmenu">
         <ul>
-          <template v-for="(item, index) in menuItems" :key="index">
+          <NuxtLink to="/" exact-active-class="active">Home</NuxtLink>
+          <NuxtLink to="/products" exact-active-class="active">All</NuxtLink>
 
+          <template v-for="(item, index) in menuItems" :key="index">
             <!-- Dropdown -->
             <li v-if="item.children && item.children.length" class="dropdown">
               <a href="#">
@@ -31,15 +32,9 @@
                 </li>
               </ul>
             </li>
-
-            <!-- Single Link -->
-            <li v-else-if="item.path">
-              <NuxtLink :to="item.path" exact-active-class="active">
-                {{ item.title }}
-              </NuxtLink>
-            </li>
-
           </template>
+
+          <NuxtLink to="/contact" exact-active-class="active">Contact</NuxtLink>
         </ul>
 
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -49,61 +44,39 @@
 </template>
 
 <script setup>
-const menuItems = [
-  { title: "Home", path: "/", children: [] },
-  { title: "All", path: "/products", children: [] },
-  {
-    title: "Clothes",
-    children: [
-      { title: "Cap", categoryId: 1 },
-      { title: "Jabla", categoryId: 2 },
-      { title: "T-Shirt", categoryId: 3 },
-      { title: "Shirt", categoryId: 4 },
-      { title: "Pents", categoryId: 5 },
-    ],
-  },
-  {
-    title: "Baby Accessories",
-    children: [
-      { title: "Towel", categoryId: 1 },
-      { title: "Godadi", categoryId: 2 },
-      { title: "Tent", categoryId: 3 },
-      { title: "Sleeping Bag", categoryId: 4 },
-      { title: "Pillow", categoryId: 5 },
-      { title: "Khoya", categoryId: 6 },
-      { title: "Chhatthi Set", categoryId: 7 },
-    ],
-  },
-  {
-    title: "Mother Accessories",
-    children: [{ title: "Others", categoryId: 1 }],
-  },
-  {
-    title: "Toys",
-    children: [
-      { title: "Walkers", categoryId: 1 },
-      { title: "Panda", categoryId: 2 },
-      { title: "Cars", categoryId: 3 },
-      { title: "Cartoons", categoryId: 4 },
-      { title: "Characters", categoryId: 5 },
-    ],
-  },
-  {
-    title: "Gift Set",
-    children: [
-      { title: "Gift set 1", categoryId: 1 },
-      { title: "Gift set 2", categoryId: 2 },
-      { title: "Gift set 3", categoryId: 3 },
-    ],
-  },
-  {
-    title: "Decoration Items",
-    children: [
-      { title: "Balloons", categoryId: 1 },
-      { title: "Colorfull strips", categoryId: 2 },
-      { title: "Candles", categoryId: 3 },
-    ],
-  },
-  { title: "Contact", path: "/contact", children: [] },
-];
+import { ref, onMounted } from 'vue'
+
+const config = useRuntimeConfig()
+const toast = useToast()
+
+const menuItems = ref([])
+
+const fetchHeaderData = async () => {
+  try {
+    const response = await $fetch(`${config.public.apiBase}header-data`)
+
+    if (response.success) {
+      menuItems.value = response.data || []
+    } else {
+      toast.error({
+        title: 'Error!',
+        message: response.message || 'Failed to load header data.',
+        position: 'topRight',
+        layout: 2
+      })
+    }
+  } catch (error) {
+    console.error('Header data fetch error:', error)
+    toast.error({
+      title: 'Error!',
+      message: error?.data?.message || 'Something went wrong.',
+      position: 'topRight',
+      layout: 2
+    })
+  }
+}
+
+onMounted(() => {
+  fetchHeaderData()
+})
 </script>

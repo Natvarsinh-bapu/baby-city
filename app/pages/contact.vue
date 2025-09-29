@@ -44,27 +44,27 @@
               <div class="bg-white p-4 shadow rounded-4 h-100 d-flex flex-column justify-content-center">
                 <div class="mb-3">
                   <h5 class="fw-bold">Email</h5>
-                  <p class="text-muted mb-0">info@toystore.com</p>
+                  <p class="text-muted mb-0">{{ footerData.email }}</p>
                 </div>
 
                 <div class="mb-3">
                   <h5 class="fw-bold">Phone</h5>
-                  <p class="text-muted mb-0">+1 5589 55488 55</p>
+                  <p class="text-muted mb-0">{{ footerData.mobile }}</p>
                 </div>
 
                 <div class="mb-3">
                   <h5 class="fw-bold">Address</h5>
-                  <p class="text-muted mb-0">A108 Adam Street, New York, NY 535022</p>
+                  <p class="text-muted mb-0">{{ footerData.address }}</p>
                 </div>
 
                 <div class="mt-3">
                   <h5 class="fw-bold mb-2">Follow Us</h5>
                   <div class="d-flex gap-3">
-                    <a href="#" class="social-icon"><img src="/assets/img/instagram.png" alt="Instagram" width="32" height="32" /></a>
-                    <a href="#" class="social-icon"><img src="/assets/img/whatsapp.png" alt="WhatsApp" width="32" height="32" /></a>
-                    <a href="#" class="social-icon"><img src="/assets/img/youtube.png" alt="YouTube" width="32" height="32" /></a>
-                    <a href="#" class="social-icon"><img src="/assets/img/telegram.png" alt="Telegram" width="32" height="32" /></a>
-                    <a href="#" class="social-icon"><img src="/assets/img/facebook.png" alt="Facebook" width="32" height="32" /></a>
+                    <a :href="footerData.instagram" class="social-icon"><img src="/assets/img/instagram.png" alt="Instagram" width="32" height="32" /></a>
+                    <a :href="footerData.whatsapp" class="social-icon"><img src="/assets/img/whatsapp.png" alt="WhatsApp" width="32" height="32" /></a>
+                    <a :href="footerData.youtube" class="social-icon"><img src="/assets/img/youtube.png" alt="YouTube" width="32" height="32" /></a>
+                    <a :href="footerData.telegram" class="social-icon"><img src="/assets/img/telegram.png" alt="Telegram" width="32" height="32" /></a>
+                    <a :href="footerData.facebook" class="social-icon"><img src="/assets/img/facebook.png" alt="Facebook" width="32" height="32" /></a>
                   </div>
                 </div>
               </div>
@@ -79,7 +79,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useCookie, useRuntimeConfig } from '#imports'
 
 const config = useRuntimeConfig()
 const toast = useToast()
@@ -89,6 +88,28 @@ const form = ref({
   name: '',
   email: '',
   message: ''
+})
+
+const footerData = ref({
+  address: '',
+  mobile: '',
+  email: '',
+  instagram: '',
+  whatsapp: '',
+  youtube: '',
+  telegram: '',
+  facebook: '',
+})
+
+onMounted(async () => {
+  try {
+    const response = await $fetch(`${config.public.apiBase}footer-data`)
+    if (response.success) {
+      footerData.value = response.data
+    }
+  } catch (err) {
+    console.error('Failed to load footer data:', err)
+  }
 })
 
 const submitForm = async () => {

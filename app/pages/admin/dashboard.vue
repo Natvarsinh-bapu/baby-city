@@ -62,6 +62,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useCookie } from '#imports'
+import auth from '~/middleware/auth'
 
 definePageMeta({ layout: 'admin' })
 
@@ -100,6 +101,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error fetching dashboard data:', error)
     if (error?.response?.status === 401) {
+      authToken.value = null
       router.push('/admin')
     }
   }

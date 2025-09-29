@@ -16,49 +16,27 @@
             <input type="text" v-model="product.name" class="form-control" placeholder="Enter product name" required />
           </div>
 
-          <!-- Slug -->
-          <div class="mb-3">
-            <label class="form-label">Slug</label>
-            <input type="text" v-model="product.slug" class="form-control" placeholder="Enter slug" />
-          </div>
-
           <!-- Description -->
           <div class="mb-3">
             <label class="form-label">Description</label>
-            <textarea v-model="product.description" class="form-control" rows="4"></textarea>
+            <textarea v-model="product.description" class="form-control" rows="4" placeholder="Description"></textarea>
           </div>
 
           <!-- Short Description -->
           <div class="mb-3">
             <label class="form-label">Short Description</label>
-            <textarea v-model="product.short_description" class="form-control" rows="2"></textarea>
+            <textarea v-model="product.short_description" class="form-control" rows="2" placeholder="Short Description"></textarea>
           </div>
 
           <!-- Pricing -->
           <div class="row g-3 mb-3">
             <div class="col-md-3">
               <label class="form-label">Price</label>
-              <input type="number" v-model="product.price" class="form-control" step="0.01" required />
+              <input type="number" v-model="product.price" class="form-control" step="0.01" placeholder="Price" required />
             </div>
             <div class="col-md-3">
               <label class="form-label">Sale Price</label>
-              <input type="number" v-model="product.sale_price" class="form-control" step="0.01" />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Sale Start</label>
-              <input type="datetime-local" v-model="product.sale_start" class="form-control" />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Sale End</label>
-              <input type="datetime-local" v-model="product.sale_end" class="form-control" />
-            </div>
-          </div>
-
-          <!-- Inventory & Flags -->
-          <div class="row g-3 mb-3">
-            <div class="col-md-3">
-              <label class="form-label">Stock Quantity</label>
-              <input type="number" v-model="product.stock_quantity" class="form-control" />
+              <input type="number" v-model="product.sale_price" class="form-control" step="0.01" placeholder="Sale Price" />
             </div>
             <div class="col-md-3">
               <label class="form-label">In Stock</label>
@@ -67,20 +45,32 @@
                 <option :value="false">No</option>
               </select>
             </div>
-            <div class="col-md-3">
-              <label class="form-label">Manage Stock</label>
-              <select v-model="product.manage_stock" class="form-select">
-                <option :value="true">Yes</option>
-                <option :value="false">No</option>
-              </select>
+          </div>
+
+          <!-- Categories + Subcategories -->
+          <div class="mb-3">
+            <h5>Categories</h5>
+            <div v-if="categories.length" class="row">
+              <div v-for="cat in categories" :key="cat.id" class="col-md-6 mb-3">
+                <!-- Category Label -->
+                <div class="fw-bold">{{ cat.name }}</div>
+
+                <!-- Sub Categories -->
+                <div v-if="cat.sub_categories?.length" class="ms-4 mt-2">
+                  <div v-for="sub in cat.sub_categories" :key="sub.id">
+                    <label>
+                      <input
+                        type="checkbox"
+                        :value="sub.id"
+                        v-model="product.subcategories"
+                      />
+                      {{ sub.name }}
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="col-md-3">
-              <label class="form-label">Featured</label>
-              <select v-model="product.featured" class="form-select">
-                <option :value="true">Yes</option>
-                <option :value="false">No</option>
-              </select>
-            </div>
+            <div v-else class="text-muted">Loading categories...</div>
           </div>
 
           <!-- Main Image -->
@@ -105,22 +95,11 @@
           <div class="mb-3">
             <h5>Attributes</h5>
             <div v-for="(attr, index) in product.attributes" :key="index" class="d-flex gap-2 mb-2">
-              <input type="text" v-model="attr.name" class="form-control" placeholder="Attribute Name" required />
+              <input type="text" v-model="attr.key" class="form-control" placeholder="Attribute Key" required />
               <input type="text" v-model="attr.value" class="form-control" placeholder="Attribute Value" required />
-              <button type="button" class="btn btn-danger" @click="removeAttribute(index)">Remove</button>
+              <button type="button" class="btn btn-danger btn-sm" @click="removeAttribute(index)">Remove</button>
             </div>
-            <button type="button" class="btn btn-primary" @click="addAttribute">+ Add Attribute</button>
-          </div>
-
-          <!-- Variants -->
-          <div class="mb-3">
-            <h5>Variants</h5>
-            <div v-for="(variant, index) in product.variants" :key="index" class="d-flex gap-2 mb-2">
-              <input type="text" v-model="variant.name" class="form-control" placeholder="Variant Name" required />
-              <input type="number" v-model="variant.price" class="form-control" placeholder="Variant Price" required />
-              <button type="button" class="btn btn-danger" @click="removeVariant(index)">Remove</button>
-            </div>
-            <button type="button" class="btn btn-primary" @click="addVariant">+ Add Variant</button>
+            <button type="button" class="btn btn-primary btn-sm" @click="addAttribute">Add Attribute</button>
           </div>
 
           <!-- Submit Button -->
@@ -135,36 +114,51 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 definePageMeta({ layout: 'admin' })
 
 const loading = ref(false)
+const categories = ref([])
 const router = useRouter()
 const config = useRuntimeConfig()
 const toast = useToast()
 
 const product = ref({
   name: '',
-  slug: '',
   description: '',
   short_description: '',
   price: '',
   sale_price: '',
-  sale_start: '',
-  sale_end: '',
-  stock_quantity: 0,
   in_stock: true,
-  manage_stock: true,
-  featured: false,
   active: true,
   image: null,
   imageUrl: '',
   gallery: [],
   galleryUrls: [],
   attributes: [],
-  variants: []
+  subcategories: []   // ✅ only subcategories stored
+})
+
+// Fetch categories
+onMounted(async () => {
+  try {
+    const response = await $fetch(`${config.public.apiBase}admin/categories`, {
+      headers: { Authorization: `Bearer ${useCookie('auth_token').value}` }
+    })
+    if (response.success) {
+      categories.value = response.data
+    }
+  } catch (err) {
+    console.error(err)
+    toast.error({
+      title: 'Error!',
+      message: 'Failed to load categories.',
+      position: 'topRight',
+      layout: 2
+    })
+  }
 })
 
 // Images
@@ -183,12 +177,8 @@ const handleGalleryUpload = (e) => {
 }
 
 // Attributes
-const addAttribute = () => product.value.attributes.push({ name: '', value: '' })
+const addAttribute = () => product.value.attributes.push({ key: '', value: '' })
 const removeAttribute = (index) => product.value.attributes.splice(index, 1)
-
-// Variants
-const addVariant = () => product.value.variants.push({ name: '', price: '' })
-const removeVariant = (index) => product.value.variants.splice(index, 1)
 
 // Submit
 const submitProduct = async () => {
@@ -205,13 +195,29 @@ const submitProduct = async () => {
   loading.value = true
   try {
     const formData = new FormData()
+
+    // Handle normal fields
     for (const key in product.value) {
-      if (key === 'gallery') product.value.gallery.forEach(f => formData.append('gallery[]', f))
-      else if (key === 'image' && product.value.image) formData.append('image', product.value.image)
-      else if (key === 'attributes') formData.append('attributes', JSON.stringify(product.value.attributes))
-      else if (key === 'variants') formData.append('variants', JSON.stringify(product.value.variants))
-      else formData.append(key, product.value[key])
+      if (['gallery', 'image', 'attributes', 'variants', 'subcategories'].includes(key)) continue
+      formData.append(key, product.value[key])
     }
+
+    // Image
+    if (product.value.image) formData.append('image', product.value.image)
+
+    // Gallery
+    product.value.gallery.forEach(f => formData.append('gallery[]', f))
+
+    // Attributes
+    product.value.attributes.forEach((attr, index) => {
+      formData.append(`attributes[${index}][key]`, attr.key)
+      formData.append(`attributes[${index}][value]`, attr.value)
+    })
+
+    // ✅ Only Subcategories stored
+    product.value.subcategories.forEach(id => {
+      formData.append('subcategories[]', id)
+    })
 
     const response = await $fetch(`${config.public.apiBase}admin/add-product`, {
       method: 'POST',

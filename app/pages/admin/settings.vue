@@ -3,19 +3,34 @@
     <!-- Page Title + Back Button -->
     <div class="pagetitle d-flex justify-content-between align-items-center">
       <h1>Settings</h1>
-      <NuxtLink to="/admin/dashboard" class="btn btn-secondary">Back</NuxtLink>
     </div>
 
-    <div class="card mt-3">
+    <!-- manage slider Section -->
+    <div class="mt-3 p-3 border rounded bg-white mb-3">
+      <div class="row">
+        <div class="col-12">
+          <NuxtLink to="/admin/manage-slider" class="btn btn-outline-primary">
+            Manage Slider
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password Section -->
+    <div class="mt-3 p-3 border rounded bg-white mb-3">
+      <div class="row">
+        <div class="col-12">
+          <NuxtLink to="/admin/change-password" class="btn btn-outline-primary">
+            Change Password
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-body">
         <form @submit.prevent="updateSettings">
           <div class="row mt-3">
-            <!-- Slogan -->
-            <div class="col-md-6 mb-3">
-              <label for="slogan" class="form-label">Slogan</label>
-              <input type="text" id="slogan" v-model="settings.slogan" class="form-control" placeholder="Enter website slogan" />
-            </div>
-
             <!-- Address -->
             <div class="col-md-6 mb-3">
               <label for="address" class="form-label">Address</label>
@@ -86,7 +101,6 @@ const toast = useToast()
 const loading = ref(false)
 
 const settings = ref({
-  slogan: '',
   address: '',
   mobile: '',
   email: '',
@@ -116,7 +130,6 @@ const updateSettings = async () => {
   loading.value = true
   try {
     const payload = new FormData()
-    payload.append('slogan', settings.value.slogan)
     payload.append('address', settings.value.address)
     payload.append('mobile', settings.value.mobile)
     payload.append('email', settings.value.email)

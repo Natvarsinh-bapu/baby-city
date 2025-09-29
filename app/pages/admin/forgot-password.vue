@@ -6,12 +6,11 @@
       <div class="mb-4 text-center">
         <NuxtLink to="/" class="logo d-inline-flex align-items-center justify-content-center text-decoration-none">
           <img
-            src="/assets/img/logo.png"
+            src="/assets/img/logo-rectangle.jpeg"
             alt="Logo"
             class="me-2"
             style="height: 40px; object-fit: contain;"
           />
-          <h1 class="mb-0 fw-bold" style="font-size: 1.5rem; line-height: 40px;">Baby City</h1>
         </NuxtLink>
       </div>
 

@@ -9,7 +9,7 @@
 
   // Admin-specific head
   useHead({
-    title: 'Admin Dashboard - Baby City',
+    title: 'Admin Dashboard',
     link: [
       { rel: 'icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', href: '/assets/admin/img/apple-touch-icon.png' },

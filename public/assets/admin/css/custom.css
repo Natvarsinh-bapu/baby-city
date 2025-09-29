@@ -8,6 +8,12 @@
   .toggle-sidebar-btn {
     display: block;
   }
+
+  .logo img {
+    max-height: 35px;
+    margin-right: 6px;
+    border-radius: 5px;
+  }
 }
 
 /* Small devices (landscape phones, 576px and up) */

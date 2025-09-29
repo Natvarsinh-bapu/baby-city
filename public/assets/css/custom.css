@@ -216,4 +216,15 @@ section, .section {
   .product-details-parent {
     padding: 0 4px;
   }
+
+  .header .logo img {
+    max-height: 40px;
+    margin-right: 8px;
+    border-radius: 5px;
+  }
+
+  .footer .footer-about .logo img {
+    max-height: 80px;
+    margin-right: 6px;
+  }
 }
