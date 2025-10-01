@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      apiBase: 'http://baby-city-backend.localhost/api/v1/'
+      apiBase: 'https://babycity-backend.solisgentech.in/api/v1/'
+      // apiBase: 'http://baby-city-backend.localhost/api/v1/'
     }
   },
 
