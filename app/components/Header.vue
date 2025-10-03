@@ -15,12 +15,16 @@
 
           <template v-for="(item, index) in menuItems" :key="index">
             <!-- Dropdown -->
-            <li v-if="item.children && item.children.length" class="dropdown">
-              <a href="#">
+            <li
+              v-if="item.children && item.children.length"
+              class="dropdown"
+              :class="{ active: openDropdown === index }"
+            >
+              <a href="#" @click.prevent="toggleDropdown(index)">
                 <span>{{ item.title }}</span>
                 <i class="bi bi-chevron-down toggle-dropdown"></i>
               </a>
-              <ul>
+              <ul :class="{ 'dropdown-active': openDropdown === index }">
                 <li v-for="(child, idx) in item.children" :key="idx">
                   <NuxtLink
                     v-if="child.categoryId !== undefined"
@@ -49,7 +53,12 @@ import { ref, onMounted } from 'vue'
 const config = useRuntimeConfig()
 const toast = useToast()
 
+const openDropdown = ref(null)
 const menuItems = ref([])
+
+const toggleDropdown = (index) => {
+  openDropdown.value = openDropdown.value === index ? null : index
+}
 
 const fetchHeaderData = async () => {
   try {
