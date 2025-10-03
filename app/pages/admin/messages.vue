@@ -105,11 +105,21 @@ const fetchMessages = async (page = 1) => {
     if (response.success && response.data) {
       messages.value = response.data
     } else {
-      toast.error({ title: 'Error!', message: response.message || 'Failed to fetch messages.' })
+      toast.error({
+        title: 'Error!',
+        message: response.message || 'Failed to fetch messages.',
+        position: 'topRight',
+        layout: 2
+      })
     }
   } catch (error) {
     console.error(error)
-    toast.error({ title: 'Error!', message: 'Something went wrong while fetching messages.' })
+    toast.error({
+      title: 'Error!',
+      message: 'Something went wrong while fetching messages.',
+      position: 'topRight',
+      layout: 2
+    })
   } finally {
     loading.value = false
   }
@@ -126,14 +136,30 @@ const deleteMessage = async (id) => {
       body: { id }
     })
     if (response.success) {
-      toast.success({ title: 'Deleted!', message: response.message || 'Message deleted successfully.' })
+      toast.success({
+        title: 'Deleted!',
+        message: response.message || 'Message deleted successfully.',
+        position: 'topRight',
+        layout: 2
+      })
+
       fetchMessages(messages.value.current_page) // refresh current page
     } else {
-      toast.error({ title: 'Error!', message: response.message || 'Failed to delete message.' })
+      toast.error({
+        title: 'Error!',
+        message: response.message || 'Failed to delete message.',
+        position: 'topRight',
+        layout: 2
+      })
     }
   } catch (error) {
     console.error(error)
-    toast.error({ title: 'Error!', message: 'Something went wrong while deleting message.' })
+    toast.error({
+      title: 'Error!',
+      message: 'Something went wrong while deleting message.',
+      position: 'topRight',
+      layout: 2
+    })
   } finally {
     loading.value = false
   }

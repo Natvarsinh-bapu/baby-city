@@ -82,7 +82,12 @@ const handleImageUpload = (e) => {
 // Submit single slider image
 const submitSlider = async () => {
   if (!newImage.value) {
-    toast.error({ title: 'Error!', message: 'Please select an image.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: 'Please select an image.',
+      position: 'topRight',
+      layout: 2
+    })
     return
   }
 
@@ -98,17 +103,33 @@ const submitSlider = async () => {
     })
 
     if (response.success) {
-      toast.success({ title: 'Success!', message: response.message || 'Slider saved.', position: 'topRight', layout: 2 })
+      toast.success({
+        title: 'Success!',
+        message: response.message || 'Slider saved.',
+        position: 'topRight',
+        layout: 2
+      })
+
       newImage.value = null
       newImageUrl.value = ''
       if (fileInput.value) fileInput.value.value = '' 
       fetchSliderList()
     } else {
-      toast.error({ title: 'Error!', message: response.message || 'Failed to save slider.', position: 'topRight', layout: 2 })
+      toast.error({
+        title: 'Error!',
+        message: response.message || 'Failed to save slider.',
+        position: 'topRight',
+        layout: 2
+      })
     }
   } catch (err) {
     console.error(err)
-    toast.error({ title: 'Error!', message: err?.data?.message || 'Something went wrong.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: err?.data?.message || 'Something went wrong.',
+      position: 'topRight',
+      layout: 2
+    })
   } finally {
     loading.value = false
   }
@@ -125,7 +146,12 @@ const fetchSliderList = async () => {
     }
   } catch (err) {
     console.error(err)
-    toast.error({ title: 'Error!', message: 'Failed to load slider list.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: 'Failed to load slider list.',
+      position: 'topRight',
+      layout: 2
+    })
   }
 }
 
@@ -140,14 +166,30 @@ const deleteSlider = async (id) => {
     })
 
     if (response.success) {
-      toast.success({ title: 'Deleted!', message: response.message || 'Slider deleted.', position: 'topRight', layout: 2 })
+      toast.success({
+        title: 'Deleted!',
+        message: response.message || 'Slider deleted.',
+        position: 'topRight',
+        layout: 2
+      })
+
       fetchSliderList()
     } else {
-      toast.error({ title: 'Error!', message: response.message || 'Failed to delete slider.', position: 'topRight', layout: 2 })
+      toast.error({
+        title: 'Error!',
+        message: response.message || 'Failed to delete slider.',
+        position: 'topRight',
+        layout: 2
+      })
     }
   } catch (err) {
     console.error(err)
-    toast.error({ title: 'Error!', message: err?.data?.message || 'Something went wrong.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: err?.data?.message || 'Something went wrong.',
+      position: 'topRight',
+      layout: 2
+    })
   }
 }
 

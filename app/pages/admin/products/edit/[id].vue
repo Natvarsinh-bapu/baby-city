@@ -153,7 +153,12 @@ const loadCategories = async () => {
     if (response.success) categories.value = response.data
   } catch (err) {
     console.error(err)
-    toast.error({ title: 'Error!', message: 'Failed to load categories.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: 'Failed to load categories.',
+      position: 'topRight',
+      layout: 2
+    })
   }
 }
 
@@ -176,7 +181,12 @@ const loadProduct = async () => {
     }
   } catch (err) {
     console.error(err)
-    toast.error({ title: 'Error!', message: 'Failed to load product.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: 'Failed to load product.',
+      position: 'topRight',
+      layout: 2
+    })
   }
 }
 
@@ -207,7 +217,12 @@ const removeAttribute = (index) => product.value.attributes.splice(index, 1)
 // Submit
 const submitProduct = async () => {
   if (!product.value.name || !product.value.price) {
-    toast.error({ title: 'Error!', message: 'Please fill required fields (Name, Price).', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: 'Please fill required fields (Name, Price).',
+      position: 'topRight',
+      layout: 2
+    })
     return
   }
 
@@ -238,14 +253,29 @@ const submitProduct = async () => {
     })
 
     if (response.success) {
-      toast.success({ title: 'Success!', message: response.message || 'Product updated successfully.', position: 'topRight', layout: 2 })
+      toast.success({
+        title: 'Success!',
+        message: response.message || 'Product updated successfully.',
+        position: 'topRight',
+        layout: 2
+      })
       router.push('/admin/products')
     } else {
-      toast.error({ title: 'Error!', message: response.message || 'Failed to update product.', position: 'topRight', layout: 2 })
+      toast.error({
+        title: 'Error!',
+        message: response.message || 'Failed to update product.',
+        position: 'topRight',
+        layout: 2
+      })
     }
   } catch (err) {
     console.error(err)
-    toast.error({ title: 'Error!', message: err?.data?.message || 'Something went wrong.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: err?.data?.message || 'Something went wrong.',
+      position: 'topRight',
+      layout: 2
+    })
   } finally {
     loading.value = false
   }

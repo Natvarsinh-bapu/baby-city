@@ -121,14 +121,30 @@ const submitForm = async () => {
     })
 
     if (response.success) {
-      toast.success({ title: 'Success!', message: response.message || 'Message sent successfully!', position: 'topRight', layout: 2 })
+      toast.success({
+        title: 'Success!',
+        message: response.message || 'Message sent successfully!',
+        position: 'topRight',
+        layout: 2,
+      })
+
       form.value = { name: '', email: '', message: '' }
     } else {
-      toast.error({ title: 'Error!', message: response.message || 'Failed to send message.', position: 'topRight', layout: 2 })
+      toast.error({
+        title: 'Error!',
+        message: response.message || 'Failed to send message.',
+        position: 'topRight',
+        layout: 2
+      })
     }
   } catch (error) {
     console.error('Error updating settings:', error)
-    toast.error({ title: 'Error!', message: error?.data?.message || 'Something went wrong.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: error?.data?.message || 'Failed to send message.',
+      position: 'topRight',
+      layout: 2
+    })
   } finally {
     loading.value = false
   }

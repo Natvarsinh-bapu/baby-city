@@ -84,7 +84,12 @@ onMounted(async () => {
 
 const handleChangePassword = async () => {
   if (form.value.newPassword !== form.value.password_confirmation) {
-    toast.error({ title: 'Error!', message: 'New passwords do not match!', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: 'New passwords do not match!',
+      position: 'topRight',
+      layout: 2
+    })
     return
   }
 
@@ -102,7 +107,12 @@ const handleChangePassword = async () => {
     })
 
     if (response.success) {
-      toast.success({ title: 'Success!', message: response.message || 'Password updated successfully.', position: 'topRight', layout: 2 })
+      toast.success({
+        title: 'Success!',
+        message: response.message || 'Password updated successfully.',
+        position: 'topRight',
+        layout: 2
+      })
 
       form.value.currentPassword = ''
       form.value.newPassword = ''
@@ -112,11 +122,21 @@ const handleChangePassword = async () => {
         await handleLogout()
       }, 200);
     } else {
-      toast.error({ title: 'Error!', message: response.message || 'Failed to update password.', position: 'topRight', layout: 2 })
+      toast.error({
+        title: 'Error!',
+        message: response.message || 'Failed to update password.',
+        position: 'topRight',
+        layout: 2
+      })
     }
   } catch (error) {
     console.error('Error updating password:', error)
-    toast.error({ title: 'Error!', message: error?.data?.message || 'Something went wrong.', position: 'topRight', layout: 2 })
+    toast.error({
+      title: 'Error!',
+      message: error?.data?.message || 'Something went wrong.',
+      position: 'topRight',
+      layout: 2
+    })
   } finally {
     loading.value = false
   }
